@@ -41,8 +41,16 @@ class TokenService {
 
       def outputAttributes = [:]
       inputAttributes.each() { attribute, value ->
+
         if(grailsApplication.config.ditto.user.attributeMapping[attribute]){
-          outputAttributes.put(grailsApplication.config.ditto.user.attributeMapping[attribute], value)
+// Is the attribute in the config mapped to more than one other attribute?
+		if(grailsApplication.config.ditto.user.attributeMapping[attribute] instanceof List) {
+				grailsApplication.config.ditto.user.attributeMapping[attribute].each() { subMapValue -> 
+				outputAttributes.put(subMapValue, value)
+			}
+		} else {
+          			outputAttributes.put(grailsApplication.config.ditto.user.attributeMapping[attribute], value)
+		}
         } else {
           outputAttributes.put(attribute, value)
         }
